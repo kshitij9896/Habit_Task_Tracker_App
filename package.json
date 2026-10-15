@@ -1,0 +1,21 @@
+{
+  "name": "habit-task-tracker",
+  "version": "1.0.0",
+  "description": "Full-stack Habit and Task Tracker with Node.js, Express, and Tailwind CSS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/api.test.js"
+  },
+  "keywords": [
+    "habit-tracker",
+    "task-tracker",
+    "express",
+    "tailwind"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

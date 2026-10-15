@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowTrack | Habit & Task Tracker</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Smooth transitions for progress bar and task completion */
+    .progress-transition {
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .task-item-enter {
+      animation: fadeInSlide 0.25s ease-out forwards;
+    }
+    @keyframes fadeInSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white relative overflow-x-hidden">
+
+  <!-- Ambient background glow effects -->
+  <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-indigo-600/15 blur-[120px] rounded-full pointer-events-none"></div>
+  <div class="absolute top-96 -left-48 w-[400px] h-[400px] bg-purple-600/10 blur-[140px] rounded-full pointer-events-none"></div>
+
+  <div class="max-w-2xl mx-auto px-4 py-8 sm:py-12 w-full relative z-10 flex-1">
+    
+    <!-- Header -->
+    <header class="mb-8">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20">
+            <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+              FlowTrack
+            </h1>
+          </div>
+        </div>
+        <div id="current-date" class="text-xs sm:text-sm font-medium text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+      <p class="text-slate-400 text-sm">
+        Track your daily habits, organize tasks, and maintain consistency.
+      </p>
+    </header>
+
+    <!-- Progress Card -->
+    <section class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-6 shadow-xl backdrop-blur-md mb-6 relative overflow-hidden">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Daily Completion</span>
+          <h2 id="progress-text" class="text-lg font-bold text-slate-100 mt-0.5">0 of 0 Completed</h2>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span id="progress-percent" class="text-2xl font-black bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">0%</span>
+        </div>
+      </div>
+
+      <!-- Animated Progress Bar -->
+      <div class="w-full bg-slate-800/80 rounded-full h-3.5 p-0.5 border border-slate-700/40 overflow-hidden mb-3">
+        <div id="progress-bar-fill" class="progress-transition h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 shadow-sm" style="width: 0%"></div>
+      </div>
+
+      <!-- Motivational Microcopy & Stats -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2 pt-1 border-t border-slate-800/60">
+        <span id="motivational-message" class="text-slate-300 font-medium flex items-center gap-1.5">
+          <span>✨</span> Let's get started on today's goals!
+        </span>
+        <div class="flex items-center gap-3">
+          <span>Habits: <strong id="stat-habits" class="text-indigo-300">0</strong></span>
+          <span>Tasks: <strong id="stat-tasks" class="text-purple-300">0</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add Task & Habit Form -->
+    <section class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-5 shadow-xl backdrop-blur-md mb-6">
+      <form id="task-form" class="space-y-4">
+        <div>
+          <label for="task-title" class="sr-only">New task or habit</label>
+          <div class="relative">
+            <input
+              type="text"
+              id="task-title"
+              placeholder="Add a new habit or task (e.g., Read 20 mins, Submit report)..."
+              class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-sm sm:text-base pr-10"
+              autocomplete="off"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <!-- Category Selector -->
+          <div class="flex items-center space-x-2 bg-slate-950/70 p-1 rounded-xl border border-slate-800">
+            <button
+              type="button"
+              id="type-habit-btn"
+              class="category-toggle-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition bg-indigo-600 text-white shadow-sm"
+              data-category="habit"
+            >
+              <span>🌱</span>
+              <span>Habit</span>
+            </button>
+            <button
+              type="button"
+              id="type-task-btn"
+              class="category-toggle-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition text-slate-400 hover:text-slate-200"
+              data-category="task"
+            >
+              <span>📋</span>
+              <span>Task</span>
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            id="add-task-btn"
+            class="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-medium px-5 py-2.5 rounded-xl text-sm flex items-center space-x-2 shadow-lg shadow-indigo-600/30 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-400 ml-auto"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Add Item</span>
+          </button>
+        </div>
+        <p id="form-error" class="hidden text-xs text-rose-400 font-medium"></p>
+      </form>
+    </section>
+
+    <!-- Filters & Task List -->
+    <section>
+      <!-- Filter Tabs -->
+      <div class="flex items-center justify-between gap-2 mb-4 overflow-x-auto pb-1 scrollbar-none">
+        <div class="flex items-center space-x-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800/80 text-xs">
+          <button class="filter-tab active-filter px-3 py-1.5 rounded-lg font-medium transition text-white bg-indigo-600/90" data-filter="all">
+            All (<span id="count-all">0</span>)
+          </button>
+          <button class="filter-tab px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-slate-200" data-filter="active">
+            Active (<span id="count-active">0</span>)
+          </button>
+          <button class="filter-tab px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-slate-200" data-filter="completed">
+            Done (<span id="count-completed">0</span>)
+          </button>
+          <button class="filter-tab px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-slate-200" data-filter="habit">
+            Habits
+          </button>
+          <button class="filter-tab px-3 py-1.5 rounded-lg font-medium transition text-slate-400 hover:text-slate-200" data-filter="task">
+            Tasks
+          </button>
+        </div>
+      </div>
+
+      <!-- Task Items Container -->
+      <div id="task-list" class="space-y-2.5">
+        <!-- Rendered by app.js -->
+        <div class="p-8 text-center text-slate-500">
+          <div class="inline-block w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+          <p class="text-sm">Loading your habits & tasks...</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 border border-slate-700/80 text-slate-100 text-xs font-medium px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2">
+    <span id="toast-icon">✓</span>
+    <span id="toast-message">Task updated</span>
+  </div>
+
+  <!-- Client Script -->
+  <script src="/app.js"></script>
+</body>
+</html>
