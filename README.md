@@ -1,4 +1,4 @@
-# FlowTrack ⚡ - Full-Stack Habit & Task Tracker
+# FlowTrack - Full-Stack Habit & Task Tracker
 
 FlowTrack is a modern, lightweight full-stack web application designed to help you track daily habits, manage tasks, and maintain consistency. Built with **Node.js**, **Express**, **Tailwind CSS**, and **vanilla JavaScript**, it features a sleek dark-mode user interface, a live dynamic progress bar, interactive category filters, a robust REST API, and production-ready Docker containerization.
 
@@ -26,38 +26,11 @@ FlowTrack is a modern, lightweight full-stack web application designed to help y
 | **Testing** | Node.js Native Test Runner (`node:test`) |
 | **Containerization** | Docker, Docker Compose |
 
----
-
-## 🏗️ Architecture
-
-```mermaid
-flowchart TD
-    subgraph Browser ["Frontend (Client)"]
-        UI["Tailwind CSS UI (public/index.html)"]
-        App["State & DOM Logic (public/app.js)"]
-        Progress["Dynamic Progress & Stats"]
-        UI --> App
-        App --> Progress
-    end
-
-    subgraph Backend ["Backend (Node.js & Express)"]
-        Server["Express App (server.js)"]
-        Store[("In-Memory Task Store")]
-        Server <--> Store
-    end
-
-    App -->|GET /api/tasks| Server
-    App -->|POST /api/tasks| Server
-    App -->|PATCH /api/tasks/:id/toggle| Server
-    App -->|DELETE /api/tasks/:id| Server
-```
-
----
 
 ## 📁 Project Structure
 
 ```text
-my-first-antigravity-app/
+FlowTrack_Habit_Task_Tracker_App/
 ├── public/
 │   ├── index.html       # Single-page UI with Tailwind CSS & dark mode styling
 │   └── app.js           # Client-side state management, fetch calls & DOM rendering
@@ -90,7 +63,7 @@ Ensure you have the following installed on your machine:
 
 1. **Clone or navigate to the repository:**
    ```bash
-   cd my-first-antigravity-app
+   cd Habit_Task_Tracker_App 
    ```
 
 2. **Install project dependencies:**
@@ -256,3 +229,5 @@ npm test
 ## 📄 License
 
 This project is open-source and available under the [ISC License](file:///f:/my-first-antigravity-app/package.json).
+
+#BuildOnElasticBeanstalk
